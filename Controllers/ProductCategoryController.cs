@@ -35,7 +35,7 @@ namespace BuildingShopAPI.Controllers
             return Ok(updateCategory);
         }
         [HttpPost]
-        public async Task<IActionResult> Create(ProductCategory category)
+        public async Task<IActionResult> Create([FromBody]ProductCategory category)
         {
             var newCatrgory=await _categoryService
                 .Create(category);

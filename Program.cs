@@ -27,6 +27,16 @@ namespace BuildingShopAPI
             builder.Services.AddTransient<IProductCategoryService, ProductCategoryService>();
             builder.Services.AddTransient<IProductService, ProductService>();
 
+            builder.Services.AddCors(option =>
+            {
+                option.AddDefaultPolicy(policy =>
+                {
+                    policy.WithOrigins("http://localhost:5180");
+                    policy.AllowAnyHeader();
+                    policy.AllowAnyMethod();
+                });
+            });
+
             var app = builder.Build();
 
             using var scope=app.Services.CreateScope();
@@ -43,6 +53,7 @@ namespace BuildingShopAPI
             app.UseHttpsRedirection();
             app.MapControllers();
             app.UseMiddleware<ErrorHandlerMiddleware>();
+            app.UseCors();
             app.UseAuthorization();
             app.Run();
         }
