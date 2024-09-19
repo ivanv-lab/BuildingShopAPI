@@ -42,6 +42,7 @@ namespace BuildingShopAPI
 
             app.UseHttpsRedirection();
             app.MapControllers();
+            app.UseMiddleware<ErrorHandlerMiddleware>();
             app.UseAuthorization();
             app.Run();
         }
