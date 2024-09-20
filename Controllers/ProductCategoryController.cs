@@ -26,23 +26,29 @@ namespace BuildingShopAPI.Controllers
             var category=await _categoryService.GetById(id);
             return Ok(category);
         }
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(long id,
-            ProductCategory category)
+        public record UpdateCategoryRequest(long Id,string Name);
+        [HttpPut]
+        public async Task<IActionResult> Update(
+            [FromBody] UpdateCategoryRequest request)
         {
+            var category=new ProductCategory { Name = request.Name };
             var updateCategory=await _categoryService
-                .Update(id, category);
+                .Update(request.Id, category);
             return Ok(updateCategory);
         }
+        public record CreateCategoryRequest(string Name);
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody]ProductCategory category)
+        public async Task<IActionResult> Create
+            ([FromBody] CreateCategoryRequest request)
         {
-            var newCatrgory=await _categoryService
-                .Create(category);
+            var newCatrgory=new ProductCategory {Name = request.Name};
+            await _categoryService.Create(newCatrgory);
             return Ok(newCatrgory);
         }
+        //public record DeleteCategoryRequest(long Id);
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(long id)
+        public async Task<IActionResult> Delete
+            (long id)
         {
             bool res = await _categoryService.Delete(id);
             if(res)
