@@ -45,11 +45,11 @@ namespace BuildingShopAPI.Controllers
             await _categoryService.Create(newCatrgory);
             return Ok(newCatrgory);
         }
-        //public record DeleteCategoryRequest(long Id);
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete
             (long id)
-        {
+         {
             bool res = await _categoryService.Delete(id);
             if(res)
                 return Ok();
