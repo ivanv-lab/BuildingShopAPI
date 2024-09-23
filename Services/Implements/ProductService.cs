@@ -1,4 +1,6 @@
-﻿using BuildingShopAPI.Models;
+﻿using BuildingShopAPI.DTO;
+using BuildingShopAPI.Mappings;
+using BuildingShopAPI.Models;
 using BuildingShopAPI.Repositories.Interfaces;
 using BuildingShopAPI.Services.Interfaces;
 
@@ -7,17 +9,26 @@ namespace BuildingShopAPI.Services.Implements
     public class ProductService : IProductService
     {
         private readonly IProductRepo _repo;
-        public ProductService(IProductRepo repo) {
-            _repo = repo; }
-        public async Task<Product> Create(Product product)
+        private readonly IMapper<Product,
+            ProductDto,ProductCreateDto> _map;
+        public ProductService(IProductRepo repo,
+            IMapper<Product,
+            ProductDto, ProductCreateDto> map)
         {
+            _repo = repo;
+            _map = map;
+        }
+        public async Task<ProductDto> Create(ProductCreateDto productDto)
+        {
+            var product=_map.Map(productDto);
             await _repo.Add(product);
-            return product;
+            product=await _repo.GetById(product.Id);
+            return _map.Map(product);
         }
 
         public async Task<bool> Delete(long id)
         {
-            var product=await _repo.GetById(id);
+            var product = await _repo.GetById(id);
             if (product != null)
             {
                 await _repo.Delete(id);
@@ -26,29 +37,32 @@ namespace BuildingShopAPI.Services.Implements
             return false;
         }
 
-        public async Task<IEnumerable<Product>> GetAll()
+        public async Task<IEnumerable<ProductDto>> GetAll()
         {
-            return await _repo.GetAll();
+            var products= await _repo.GetAll();
+            return _map.MapList(products);
         }
 
-        public async Task<IEnumerable<Product>> GetByCategoryId(long categoryId)
+        public async Task<IEnumerable<ProductDto>> GetByCategoryId(long categoryId)
         {
-            return await _repo.GetByCategoryId(categoryId);
+            var products=await _repo.GetByCategoryId(categoryId);
+            return _map.MapList(products);
         }
 
-        public async Task<Product> GetById(long id)
+        public async Task<ProductDto> GetById(long id)
         {
-            return await _repo.GetById(id);
+           var category=await _repo.GetById(id);
+            return _map.Map(category);
         }
 
-        public async Task<Product> Update(long id, Product product)
+        public async Task<ProductDto> Update(long id, 
+            ProductCreateDto product)
         {
             var updateProduct = await _repo.GetById(id);
-            updateProduct.Name = product.Name;
-            updateProduct.Count = product.Count;
-            updateProduct.CategoryId=product.CategoryId;
+            updateProduct = _map.UpdateMap
+                (updateProduct, product);
             await _repo.Update(updateProduct);
-            return updateProduct;
+            return _map.Map(updateProduct);
         }
     }
 }

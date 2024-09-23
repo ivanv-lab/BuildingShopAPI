@@ -28,6 +28,7 @@ namespace BuildingShopAPI.Repositories.Implements
         {
             return await _context.Products
                 .Where(p => p.IsDeleted == false)
+                .Include(p=>p.Category)
                 .ToListAsync();
         }
 
@@ -36,6 +37,7 @@ namespace BuildingShopAPI.Repositories.Implements
             return await _context.Products
                 .Where(p=>p.CategoryId==categoryId 
                 && p.IsDeleted==false)
+                .Include(p=>p.Category)
                 .ToListAsync();
         }
 
@@ -44,6 +46,7 @@ namespace BuildingShopAPI.Repositories.Implements
             return await _context.Products
                 .Where(p=>p.IsDeleted==false
                 && p.Id==id)
+                .Include(p=>p.Category)
                 .FirstAsync();
         }
 

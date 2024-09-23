@@ -1,4 +1,5 @@
-﻿using BuildingShopAPI.Models;
+﻿using BuildingShopAPI.DTO;
+using BuildingShopAPI.Models;
 using BuildingShopAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -33,16 +34,17 @@ namespace BuildingShopAPI.Controllers
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(long id,
-            Product product)
+            [FromBody]ProductCreateDto request)
         {
             var updateProduct=await _productService
-                .Update(id, product);
+                .Update(id, request);
             return Ok(updateProduct);
         }
         [HttpPost]
-        public async Task<IActionResult> Create(Product product)
+        public async Task<IActionResult> Create
+            ([FromBody] ProductCreateDto request)
         {
-            var newProduct=await _productService.Create(product);
+            var newProduct=await _productService.Create(request);
             return Ok(newProduct);
         }
         [HttpDelete("{id}")]

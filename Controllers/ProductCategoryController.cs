@@ -1,4 +1,5 @@
-﻿using BuildingShopAPI.Models;
+﻿using BuildingShopAPI.DTO;
+using BuildingShopAPI.Models;
 using BuildingShopAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,24 +27,20 @@ namespace BuildingShopAPI.Controllers
             var category=await _categoryService.GetById(id);
             return Ok(category);
         }
-        public record UpdateCategoryRequest(long Id,string Name);
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Update(
-            [FromBody] UpdateCategoryRequest request)
+            long id,[FromBody] CategoryCreateDto request)
         {
-            var category=new ProductCategory { Name = request.Name };
             var updateCategory=await _categoryService
-                .Update(request.Id, category);
+                .Update(id, request);
             return Ok(updateCategory);
         }
-        public record CreateCategoryRequest(string Name);
         [HttpPost]
         public async Task<IActionResult> Create
-            ([FromBody] CreateCategoryRequest request)
+            ([FromBody] CategoryCreateDto request)
         {
-            var newCatrgory=new ProductCategory {Name = request.Name};
-            await _categoryService.Create(newCatrgory);
-            return Ok(newCatrgory);
+            await _categoryService.Create(request);
+            return Ok(request);
         }
 
         [HttpDelete("{id}")]

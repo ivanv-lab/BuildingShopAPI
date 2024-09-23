@@ -1,4 +1,6 @@
 
+using BuildingShopAPI.DTO;
+using BuildingShopAPI.Mappings;
 using BuildingShopAPI.Models;
 using BuildingShopAPI.Repositories.Implements;
 using BuildingShopAPI.Repositories.Interfaces;
@@ -21,11 +23,17 @@ namespace BuildingShopAPI
             builder.Services.AddSwaggerGen();
             builder.Services.AddScoped<BuildingShopDbContext>();
 
+            builder.Services.AddTransient<IMapper<Product, ProductDto,
+                ProductCreateDto>, ProductMap>();
+            builder.Services.AddTransient<IMapper<ProductCategory,
+                CategoryDto, CategoryCreateDto>, CategoryMap>();
+
             builder.Services.AddTransient<IProductCategoryRepo, ProductCategoryRepo>();
             builder.Services.AddTransient<IProductRepo, ProductRepo>();
 
             builder.Services.AddTransient<IProductCategoryService, ProductCategoryService>();
             builder.Services.AddTransient<IProductService, ProductService>();
+
 
             builder.Services.AddCors(option =>
             {

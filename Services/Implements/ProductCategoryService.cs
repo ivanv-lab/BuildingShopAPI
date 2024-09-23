@@ -1,4 +1,6 @@
-﻿using BuildingShopAPI.Models;
+﻿using BuildingShopAPI.DTO;
+using BuildingShopAPI.Mappings;
+using BuildingShopAPI.Models;
 using BuildingShopAPI.Repositories.Interfaces;
 using BuildingShopAPI.Services.Interfaces;
 
@@ -7,15 +9,21 @@ namespace BuildingShopAPI.Services.Implements
     public class ProductCategoryService : IProductCategoryService
     {
         private readonly IProductCategoryRepo _repo;
-        public ProductCategoryService(IProductCategoryRepo repo)
+        private readonly IMapper<ProductCategory,
+            CategoryDto,CategoryCreateDto> _map;
+        public ProductCategoryService(IProductCategoryRepo repo,
+            IMapper<ProductCategory,
+            CategoryDto, CategoryCreateDto> map)
         {
             _repo = repo;
+            _map = map;
         }
 
-        public async Task<ProductCategory> Create(ProductCategory category)
+        public async Task<CategoryDto> Create(CategoryCreateDto categoryDto)
         {
+            var category=_map.Map(categoryDto);
             await _repo.Add(category);
-            return category;
+            return _map.Map(category);
         }
 
         public async Task<bool> Delete(long id)
@@ -29,22 +37,24 @@ namespace BuildingShopAPI.Services.Implements
             return false;
         }
 
-        public async Task<IEnumerable<ProductCategory>> GetAll()
+        public async Task<IEnumerable<CategoryDto>> GetAll()
         {
-            return await _repo.GetAll();
+            var categories=await _repo.GetAll();
+            return _map.MapList(categories);
         }
 
-        public async Task<ProductCategory> GetById(long id)
+        public async Task<CategoryDto> GetById(long id)
         {
-            return await _repo.GetById(id);
+            var category=await _repo.GetById(id);
+            return _map.Map(category);
         }
 
-        public async Task<ProductCategory> Update(long id, ProductCategory category)
+        public async Task<CategoryDto> Update(long id, CategoryCreateDto categoryDto)
         {
-            var updateCategory=await _repo.GetById(id);
-            updateCategory.Name = category.Name;
+            var updateCategory = await _repo.GetById(id);
+            updateCategory=_map.UpdateMap(updateCategory,categoryDto);
             await _repo.Update(updateCategory);
-            return updateCategory;
+            return _map.Map(updateCategory);
         }
     }
 }
