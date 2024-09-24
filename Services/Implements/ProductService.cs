@@ -62,6 +62,8 @@ namespace BuildingShopAPI.Services.Implements
             updateProduct = _map.UpdateMap
                 (updateProduct, product);
             await _repo.Update(updateProduct);
+            updateProduct=await _repo.GetById(id);
+            //здесь категория не сохраняется, сброс после Update
             return _map.Map(updateProduct);
         }
     }

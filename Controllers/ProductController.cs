@@ -32,12 +32,12 @@ namespace BuildingShopAPI.Controllers
             var products=await _productService.GetByCategoryId(id);
             return Ok(products);
         }
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(long id,
+        [HttpPut]
+        public async Task<IActionResult> Update(
             [FromBody]ProductCreateDto request)
         {
             var updateProduct=await _productService
-                .Update(id, request);
+                .Update(request.Id, request);
             return Ok(updateProduct);
         }
         [HttpPost]
