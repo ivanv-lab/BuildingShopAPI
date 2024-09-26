@@ -1,4 +1,3 @@
-
 using BuildingShopAPI.DTO;
 using BuildingShopAPI.Mappings;
 using BuildingShopAPI.Models;
@@ -6,6 +5,7 @@ using BuildingShopAPI.Repositories.Implements;
 using BuildingShopAPI.Repositories.Interfaces;
 using BuildingShopAPI.Services.Implements;
 using BuildingShopAPI.Services.Interfaces;
+using System.Configuration;
 
 namespace BuildingShopAPI
 {
@@ -34,12 +34,21 @@ namespace BuildingShopAPI
             builder.Services.AddTransient<IProductCategoryService, ProductCategoryService>();
             builder.Services.AddTransient<IProductService, ProductService>();
 
+            //builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer
+            //    .Connect("Redis"));
+
+            builder.Services.AddDistributedRedisCache(options =>
+            {
+                options.Configuration = builder
+                .Configuration.GetConnectionString("Redis");
+                options.InstanceName = "RedisCache";
+            });
 
             builder.Services.AddCors(option =>
             {
                 option.AddDefaultPolicy(policy =>
                 {
-                    policy.WithOrigins("http://localhost:5180");
+                    policy.WithOrigins("http://localhost:5230");
                     policy.AllowAnyHeader();
                     policy.AllowAnyMethod();
                 });

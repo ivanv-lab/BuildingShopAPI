@@ -52,5 +52,13 @@ namespace BuildingShopAPI.Controllers
                 return Ok();
             return BadRequest();
         }
+        //[HttpGet("sort")]
+        //public async Task<IActionResult> Search([FromQuery]string? searchString,
+        //    [FromQuery] string? sortOrder)
+        //{
+        //    const int pageSize = 10;
+        //    var regions = await _categoryService.Search(searchString, sortOrder);
+        //    return Ok(regions);
+        //}
     }
 }

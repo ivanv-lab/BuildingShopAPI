@@ -1,5 +1,6 @@
 ﻿using BuildingShopAPI.DTO;
 using BuildingShopAPI.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BuildingShopAPI.Services.Interfaces
 {
@@ -10,6 +11,8 @@ namespace BuildingShopAPI.Services.Interfaces
         public Task<CategoryDto> Create(CategoryCreateDto category);
         public Task<CategoryDto> Update(long id,
             CategoryCreateDto category);
+        public Task<IEnumerable<CategoryDto>> Search(string searchString,
+            string? sortOrder);
         public Task<bool> Delete(long id);
     }
 }

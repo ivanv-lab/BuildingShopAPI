@@ -56,5 +56,31 @@ namespace BuildingShopAPI.Services.Implements
             await _repo.Update(updateCategory);
             return _map.Map(updateCategory);
         }
+        public async Task<IEnumerable<CategoryDto>> Search
+            (string? searchString,string? sortOrder)
+        {
+            var categories = await _repo.GetAll();
+
+            if (!string.IsNullOrEmpty(searchString)
+                || searchString==" ")
+            {
+                searchString = searchString.ToLower();
+                categories=categories.Where(c=>c.Name.ToLower().Contains(searchString)
+                || c.Id.ToString().Contains(searchString));
+            }
+
+            switch (sortOrder) {
+                case "Name":
+                    categories=categories.OrderBy(c=>c.Name); break;
+                case "Name_desc":
+                    categories=categories.OrderByDescending(c=>c.Name); break;
+                case "Id":
+                    categories=categories.OrderBy(c=> c.Id); break;
+                default:
+                    categories = categories.OrderByDescending(c => c.Id);
+                    break;
+            }
+            return _map.MapList(categories);
+        }
     }
 }
