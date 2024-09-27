@@ -38,6 +38,7 @@ namespace BuildingShopAPI.Controllers
         {
             var updateProduct=await _productService
                 .Update(request.Id, request);
+            await _productService.UpdateCache();
             return Ok(updateProduct);
         }
         [HttpPost]
@@ -45,14 +46,18 @@ namespace BuildingShopAPI.Controllers
             ([FromBody] ProductCreateDto request)
         {
             var newProduct=await _productService.Create(request);
+            await _productService.UpdateCache();
             return Ok(newProduct);
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(long id)
         {
             bool res=await _productService.Delete(id);
-            if(res)
+            if (res)
+            {
+                await _productService.UpdateCache();
                 return Ok();
+            }
             return BadRequest();
         }
     }

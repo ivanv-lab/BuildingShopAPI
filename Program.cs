@@ -5,7 +5,6 @@ using BuildingShopAPI.Repositories.Implements;
 using BuildingShopAPI.Repositories.Interfaces;
 using BuildingShopAPI.Services.Implements;
 using BuildingShopAPI.Services.Interfaces;
-using System.Configuration;
 
 namespace BuildingShopAPI
 {
@@ -34,13 +33,10 @@ namespace BuildingShopAPI
             builder.Services.AddTransient<IProductCategoryService, ProductCategoryService>();
             builder.Services.AddTransient<IProductService, ProductService>();
 
-            //builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer
-            //    .Connect("Redis"));
-
-            builder.Services.AddDistributedRedisCache(options =>
+            builder.Services.AddStackExchangeRedisCache(options =>
             {
-                options.Configuration = builder
-                .Configuration.GetConnectionString("Redis");
+                options.Configuration = builder.Configuration
+                .GetConnectionString("Redis");
                 options.InstanceName = "RedisCache";
             });
 
@@ -59,7 +55,8 @@ namespace BuildingShopAPI
             using var scope=app.Services.CreateScope();
             using var dbContext = scope.ServiceProvider
                 .GetRequiredService<BuildingShopDbContext>();
-            dbContext.Database.EnsureCreatedAsync();
+            //dbContext.Database.EnsureCreatedAsync();
+            DbInitializer.Initialize(dbContext);
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {

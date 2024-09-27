@@ -11,5 +11,6 @@ namespace BuildingShopAPI.Services.Interfaces
         public Task<ProductDto> Update(long id, ProductCreateDto product);
         public Task<IEnumerable<ProductDto>> GetByCategoryId(long categoryId);
         public Task<bool> Delete(long id);
+        public Task UpdateCache();
     }
 }

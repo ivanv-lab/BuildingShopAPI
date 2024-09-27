@@ -1,6 +1,7 @@
 ﻿using BuildingShopAPI.Models;
 using BuildingShopAPI.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace BuildingShopAPI.Repositories.Implements
 {
@@ -35,8 +36,8 @@ namespace BuildingShopAPI.Repositories.Implements
         public async Task<ProductCategory> GetById(long id)
         {
             return await _context.ProductCategories
-                .Where(c=>c.IsDeleted==false 
-                && c.Id==id)
+                .Where(c => c.IsDeleted == false
+                && c.Id == id)
                 .FirstAsync();
         }
 
