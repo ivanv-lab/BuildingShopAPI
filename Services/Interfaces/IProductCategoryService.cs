@@ -14,6 +14,9 @@ namespace BuildingShopAPI.Services.Interfaces
         public Task<IEnumerable<CategoryDto>> Search(string searchString,
             string? sortOrder);
         public Task<bool> Delete(long id);
+        public Task<IEnumerable<CategoryDto>> SortSearch
+            (string? sortOrder,string? searchString);
+        public Task<int> Count();
         public Task UpdateCache();
     }
 }

@@ -10,5 +10,6 @@ namespace BuildingShopAPI.Repositories.Interfaces
         public Task Add(Product product);
         public Task Update(Product product);
         public Task Delete(long id);
+        public Task<int> Count();
     }
 }

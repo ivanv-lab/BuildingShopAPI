@@ -8,6 +8,7 @@ namespace BuildingShopAPI.Repositories.Interfaces
         public Task<ProductCategory> GetById(long id);
         public Task Add(ProductCategory category);
         public Task Update(ProductCategory category);
+        public Task<int> Count();
         public Task Delete(long id);
     }
 }

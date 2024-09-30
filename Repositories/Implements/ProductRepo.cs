@@ -55,5 +55,10 @@ namespace BuildingShopAPI.Repositories.Implements
             _context.Entry(product).State= EntityState.Modified;
             await _context.SaveChangesAsync();
         }
+        public async Task<int> Count()
+        {
+            return await _context.Products
+                .Where(p => !p.IsDeleted).CountAsync();
+        }
     }
 }

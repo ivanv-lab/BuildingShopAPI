@@ -44,8 +44,6 @@ namespace BuildingShopAPI.Services.Implements
 
         public async Task<IEnumerable<CategoryDto>> GetAll()
         {
-            // var categories=await _repo.GetAll();
-            // return _map.MapList(categories);
             var allCachedCategories = await _cache.GetStringAsync
                 ("allCategories");
             if (!string.IsNullOrEmpty(allCachedCategories))
@@ -68,8 +66,6 @@ namespace BuildingShopAPI.Services.Implements
 
         public async Task<CategoryDto> GetById(long id)
         {
-            //var category=await _repo.GetById(id);
-            //return _map.Map(category);
             var cachedCategory = await _cache.GetStringAsync
                 ($"productCategory:{id}");
             if (!string.IsNullOrEmpty(cachedCategory))
@@ -125,6 +121,40 @@ namespace BuildingShopAPI.Services.Implements
         public async Task UpdateCache()
         {
             await _cache.RemoveAsync("allCategories");
+        }
+        public async Task<IEnumerable<CategoryDto>> SortSearch
+            (string? sortOrder, string? searchString)
+        {
+            var categories=await GetAll();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                searchString = searchString.ToLower();
+                categories = categories.Where(c => c.Name.ToLower()
+                .Contains(searchString)
+                || c.Id.ToString().Contains(searchString));
+            }
+            switch (sortOrder)
+            {
+                case "Name":
+                    categories=categories.OrderBy(c=>c.Name);
+                    break;
+                case "Name_desc":
+                    categories = categories.OrderByDescending(c => c.Name);
+                    break;
+                case "Id":
+                    categories = categories.OrderBy(c => c.Id);
+                    break;
+                default:
+                    categories = categories.OrderByDescending(c => c.Id);
+                    break;
+            }
+            return categories;
+        }
+        public async Task<int> Count()
+        {
+            int count = await _repo.Count();
+            return count;
         }
     }
 }

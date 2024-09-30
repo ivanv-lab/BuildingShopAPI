@@ -57,13 +57,29 @@ namespace BuildingShopAPI.Controllers
             }
             return BadRequest();
         }
-        //[HttpGet("sort")]
-        //public async Task<IActionResult> Search([FromQuery]string? searchString,
-        //    [FromQuery] string? sortOrder)
-        //{
-        //    const int pageSize = 10;
-        //    var regions = await _categoryService.Search(searchString, sortOrder);
-        //    return Ok(regions);
-        //}
+        [HttpGet("sort")]
+        public async Task<IActionResult> SortCategories(
+            [FromQuery] string? sortOrder,
+            [FromQuery] string? searchString,
+            [FromQuery] int page=1)
+        {
+            const int pageSize = 10;
+
+            var categories = await _categoryService.SortSearch(sortOrder,
+                searchString);
+            categories=categories.Skip((page-1)*pageSize)
+                .Take(pageSize)
+                .ToList();
+            var count=await _categoryService.Count();
+            var response = new
+            {
+                items = categories,
+                currentPage = page,
+                totalPages =
+                (int)Math.Ceiling((double)count / pageSize),
+                totalCount = count
+            };
+            return Ok(response);
+        }
     }
 }

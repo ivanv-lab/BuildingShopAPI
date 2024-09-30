@@ -33,6 +33,8 @@ namespace BuildingShopAPI
             builder.Services.AddTransient<IProductCategoryService, ProductCategoryService>();
             builder.Services.AddTransient<IProductService, ProductService>();
 
+
+
             builder.Services.AddStackExchangeRedisCache(options =>
             {
                 options.Configuration = builder.Configuration

@@ -47,5 +47,10 @@ namespace BuildingShopAPI.Repositories.Implements
                 EntityState.Modified;
             await _context.SaveChangesAsync();
         }
+        public async Task<int> Count()
+        {
+            return await _context.ProductCategories
+                .Where(c=>!c.IsDeleted).CountAsync();
+        }
     }
 }

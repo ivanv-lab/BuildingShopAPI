@@ -101,10 +101,57 @@ namespace BuildingShopAPI.Services.Implements
             updateProduct=await _repo.GetById(id);
             return _map.Map(updateProduct);
         }
-
         public async Task UpdateCache()
         {
             await _cache.RemoveAsync("allProducts");
+        }
+        public async Task<int> Count()
+        {
+            int count = await _repo.Count();
+            return count;
+        }
+        public async Task<IEnumerable<ProductDto>> SortSearch
+            (string? sortOrder,string? searchString)
+        {
+            var products = await GetAll();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                searchString = searchString.ToLower();
+                products = products.Where(p => p.Name.ToLower()
+                .Contains(searchString)
+                || p.Id.ToString().Contains(searchString)
+                || p.Count.ToString().Contains(searchString)
+                || p.Category.Name.ToLower().Contains(searchString));
+            }
+            switch (sortOrder)
+            {
+                case "Name":
+                    products = products.OrderBy(p => p.Name);
+                    break;
+                case "Name_desc":
+                    products=products.OrderByDescending(p => p.Name);
+                    break;
+                case "Count":
+                    products=products.OrderBy(p => p.Count);
+                    break;
+                case "Count_desc":
+                    products=products.OrderByDescending(p=>p.Count);
+                    break;
+                case "CatName":
+                    products = products.OrderBy(p => p.Category.Name);
+                    break;
+                case "CatName_desc":
+                    products = products.OrderByDescending(p => p.Category.Name);
+                    break;
+                case "Id":
+                    products=products.OrderBy(p=>p.Id);
+                    break;
+                default:
+                    products = products.OrderByDescending(p => p.Id);
+                    break;
+            }
+            return products;
         }
     }
 }
