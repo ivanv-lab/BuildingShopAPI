@@ -44,45 +44,49 @@ namespace BuildingShopAPI.Services.Implements
 
         public async Task<IEnumerable<CategoryDto>> GetAll()
         {
-            var allCachedCategories = await _cache.GetStringAsync
-                ("allCategories");
-            if (!string.IsNullOrEmpty(allCachedCategories))
-            {
-                var allCategories = JsonConvert
-                    .DeserializeObject<IEnumerable<ProductCategory>>
-                    (allCachedCategories);
-                return _map.MapList(allCategories);
-            }
-            var dbCategories = await _repo.GetAll();
-            await _cache.SetStringAsync("allCategories",
-                JsonConvert.SerializeObject(dbCategories),
-                new DistributedCacheEntryOptions
-                {
-                    AbsoluteExpirationRelativeToNow =
-                    TimeSpan.FromMinutes(5)
-                });
-            return _map.MapList(dbCategories);
+            var categories=await _repo.GetAll();
+            return _map.MapList(categories);
+            //var allCachedCategories = await _cache.GetStringAsync
+            //    ("allCategories");
+            //if (!string.IsNullOrEmpty(allCachedCategories))
+            //{
+            //    var allCategories = JsonConvert
+            //        .DeserializeObject<IEnumerable<ProductCategory>>
+            //        (allCachedCategories);
+            //    return _map.MapList(allCategories);
+            //}
+            //var dbCategories = await _repo.GetAll();
+            //await _cache.SetStringAsync("allCategories",
+            //    JsonConvert.SerializeObject(dbCategories),
+            //    new DistributedCacheEntryOptions
+            //    {
+            //        AbsoluteExpirationRelativeToNow =
+            //        TimeSpan.FromMinutes(5)
+            //    });
+            //return _map.MapList(dbCategories);
         }
 
         public async Task<CategoryDto> GetById(long id)
         {
-            var cachedCategory = await _cache.GetStringAsync
-                ($"productCategory:{id}");
-            if (!string.IsNullOrEmpty(cachedCategory))
-            {
-               var cacheCategory=JsonConvert
-                    .DeserializeObject<ProductCategory>(cachedCategory);
-                return _map.Map(cacheCategory);
-            }
-            var dbCategory=await _repo.GetById(id);
-            await _cache.SetStringAsync($"productCategory:{id}",
-                JsonConvert.SerializeObject(dbCategory),
-                new DistributedCacheEntryOptions
-                {
-                    AbsoluteExpirationRelativeToNow =
-                    TimeSpan.FromMinutes(5)
-                });
-            return _map.Map(dbCategory);
+            var category = await _repo.GetById(id);
+            return _map.Map(category);
+            //var cachedCategory = await _cache.GetStringAsync
+            //    ($"productCategory:{id}");
+            //if (!string.IsNullOrEmpty(cachedCategory))
+            //{
+            //   var cacheCategory=JsonConvert
+            //        .DeserializeObject<ProductCategory>(cachedCategory);
+            //    return _map.Map(cacheCategory);
+            //}
+            //var dbCategory=await _repo.GetById(id);
+            //await _cache.SetStringAsync($"productCategory:{id}",
+            //    JsonConvert.SerializeObject(dbCategory),
+            //    new DistributedCacheEntryOptions
+            //    {
+            //        AbsoluteExpirationRelativeToNow =
+            //        TimeSpan.FromMinutes(5)
+            //    });
+            //return _map.Map(dbCategory);
         }
 
         public async Task<CategoryDto> Update(long id, CategoryCreateDto categoryDto)

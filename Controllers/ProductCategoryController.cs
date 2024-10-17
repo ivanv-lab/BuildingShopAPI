@@ -33,7 +33,7 @@ namespace BuildingShopAPI.Controllers
         {
             var updateCategory=await _categoryService
                 .Update(request.Id, request);
-            await _categoryService.UpdateCache();
+            //await _categoryService.UpdateCache();
             return Ok(updateCategory);
         }
         [HttpPost]
@@ -41,7 +41,7 @@ namespace BuildingShopAPI.Controllers
             ([FromBody] CategoryCreateDto request)
         {
             await _categoryService.Create(request);
-            await _categoryService.UpdateCache();
+            //await _categoryService.UpdateCache();
             return Ok(request);
         }
 
@@ -52,7 +52,7 @@ namespace BuildingShopAPI.Controllers
             bool res = await _categoryService.Delete(id);
             if (res)
             {
-                await _categoryService.UpdateCache();
+                //await _categoryService.UpdateCache();
                 return Ok();
             }
             return BadRequest();

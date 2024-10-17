@@ -46,7 +46,7 @@ namespace BuildingShopAPI
             {
                 option.AddDefaultPolicy(policy =>
                 {
-                    policy.WithOrigins("http://localhost:5230");
+                    policy.WithOrigins("http://localhost:5100");
                     policy.AllowAnyHeader();
                     policy.AllowAnyMethod();
                 });

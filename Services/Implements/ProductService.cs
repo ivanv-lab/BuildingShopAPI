@@ -43,25 +43,27 @@ namespace BuildingShopAPI.Services.Implements
 
         public async Task<IEnumerable<ProductDto>> GetAll()
         {
-            var allCachedProducts = await _cache.GetStringAsync
-                ("allProducts");
-            if (!string.IsNullOrEmpty(allCachedProducts))
-            {
-                var allProducts=JsonConvert
-                    .DeserializeObject<IEnumerable<Product>>
-                    (allCachedProducts);
-                return _map.MapList(allProducts);
-            }
-            var dbProducts=await _repo.GetAll();
-            await _cache.SetStringAsync("allProducts",
-                JsonConvert.SerializeObject(dbProducts),
-                new DistributedCacheEntryOptions
-                {
+            var produts=await _repo.GetAll();
+            return _map.MapList(produts);
+            //var allCachedProducts = await _cache.GetStringAsync
+            //    ("allProducts");
+            //if (!string.IsNullOrEmpty(allCachedProducts))
+            //{
+            //    var allProducts=JsonConvert
+            //        .DeserializeObject<IEnumerable<Product>>
+            //        (allCachedProducts);
+            //    return _map.MapList(allProducts);
+            //}
+            //var dbProducts=await _repo.GetAll();
+            //await _cache.SetStringAsync("allProducts",
+            //    JsonConvert.SerializeObject(dbProducts),
+            //    new DistributedCacheEntryOptions
+            //    {
                     
-                    AbsoluteExpirationRelativeToNow =
-                    TimeSpan.FromMinutes(5)
-                });
-            return _map.MapList(dbProducts);
+            //        AbsoluteExpirationRelativeToNow =
+            //        TimeSpan.FromMinutes(5)
+            //    });
+            //return _map.MapList(dbProducts);
         }
 
         public async Task<IEnumerable<ProductDto>> GetByCategoryId(long categoryId)
@@ -72,23 +74,25 @@ namespace BuildingShopAPI.Services.Implements
 
         public async Task<ProductDto> GetById(long id)
         {
-            var cachedProduct = await _cache.GetStringAsync
-                 ($"product:{id}");
-            if (!string.IsNullOrEmpty(cachedProduct))
-            {
-                var cacheProduct = JsonConvert
-                    .DeserializeObject<Product>(cachedProduct);
-                return _map.Map(cacheProduct);
-            }
-            var dbProduct=await _repo.GetById(id);
-            await _cache.SetStringAsync($"product:{id}",
-                JsonConvert.SerializeObject(dbProduct),
-                new DistributedCacheEntryOptions
-                {
-                    AbsoluteExpirationRelativeToNow =
-                    TimeSpan.FromMinutes(5)
-                });
-            return _map.Map(dbProduct);
+            var product=await _repo.GetById(id);
+            return _map.Map(product);
+            //var cachedProduct = await _cache.GetStringAsync
+            //     ($"product:{id}");
+            //if (!string.IsNullOrEmpty(cachedProduct))
+            //{
+            //    var cacheProduct = JsonConvert
+            //        .DeserializeObject<Product>(cachedProduct);
+            //    return _map.Map(cacheProduct);
+            //}
+            //var dbProduct=await _repo.GetById(id);
+            //await _cache.SetStringAsync($"product:{id}",
+            //    JsonConvert.SerializeObject(dbProduct),
+            //    new DistributedCacheEntryOptions
+            //    {
+            //        AbsoluteExpirationRelativeToNow =
+            //        TimeSpan.FromMinutes(5)
+            //    });
+            //return _map.Map(dbProduct);
         }
 
         public async Task<ProductDto> Update(long id, 
